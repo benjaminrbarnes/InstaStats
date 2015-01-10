@@ -11,11 +11,11 @@
         android:text="Number of most recent photos to check:"
         android:textSize="20dp" />
 
-    <TableRow
+    <RadioGroup
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <RadioButton
             android:id="@+id/RadioButton20"
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="100" />
-    </TableRow>
+    </RadioGroup>
 
     <Button
         android:id="@+id/CalculatePictureLikesButton"
@@ -75,7 +75,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="1"
                 android:textSize="25dp" />
 
             <TextView
@@ -83,7 +83,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="2"
                 android:textSize="25dp" />
 
             <TextView
@@ -91,7 +91,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="3"
                 android:textSize="25dp" />
 
             <TextView
@@ -99,7 +99,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="4"
                 android:textSize="25dp" />
 
             <TextView
@@ -107,7 +107,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="5"
                 android:textSize="25dp" />
 
             <TextView
@@ -115,7 +115,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="6"
                 android:textSize="25dp" />
 
             <TextView
@@ -123,7 +123,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="7"
                 android:textSize="25dp" />
 
             <TextView
@@ -131,7 +131,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="8"
                 android:textSize="25dp" />
 
             <TextView
@@ -139,7 +139,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="9"
                 android:textSize="25dp" />
 
             <TextView
@@ -147,7 +147,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="10"
                 android:textSize="25dp" />
 
             <TextView
@@ -155,7 +155,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="11"
                 android:textSize="25dp" />
 
             <TextView
@@ -163,7 +163,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="12"
                 android:textSize="25dp" />
 
             <TextView
@@ -171,7 +171,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="13"
                 android:textSize="25dp" />
 
             <TextView
@@ -179,7 +179,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="14"
                 android:textSize="25dp" />
 
             <TextView
@@ -187,7 +187,77 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Hi"
+                android:text="15"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/LikeTV16"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="16"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/LikeTV17"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="17"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/LikeTV18"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="18"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/LikeTV19"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="19"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/LikeTV20"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="20"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/LikeTV21"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="21"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/LikeTV22"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="22"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/LikeTV23"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="23"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/LikeTV24"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="24"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/LikeTV25"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="25"
                 android:textSize="25dp" />
 
         </LinearLayout>

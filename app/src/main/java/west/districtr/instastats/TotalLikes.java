@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -98,12 +96,11 @@ public class TotalLikes extends Activity {
         twitterShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // http://stackoverflow.com/questions/2077008/android-intent-for-twitter-application
                 TextView numOfPhotoLikesTV = (TextView) findViewById(R.id.NumberOfLikesTV);
                 TextView numOfPhotosTV = (TextView) findViewById(R.id.NumberOfPhotosTV);
                 String[] likeSumArr = numOfPhotoLikesTV.getText().toString().split(" ");
                 String[] photoSumArr = numOfPhotosTV.getText().toString().split(" ");
-
-
                 // Create intent using ACTION_VIEW and a normal Twitter url:
                 String tweetUrl =
                         String.format("https://twitter.com/intent/tweet?text=%s&url=%s",
@@ -119,7 +116,6 @@ public class TotalLikes extends Activity {
                         intent.setPackage(info.activityInfo.packageName);
                     }
                 }
-
                 startActivity(intent);
             }
         });
@@ -128,6 +124,7 @@ public class TotalLikes extends Activity {
     }
 
     public static String urlEncode(String s) {
+        // http://stackoverflow.com/questions/2077008/android-intent-for-twitter-application
         try {
             return URLEncoder.encode(s, "UTF-8");
         }
@@ -135,27 +132,5 @@ public class TotalLikes extends Activity {
             e.printStackTrace();
             throw new RuntimeException("URLEncoder.encode() failed for " + s);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_total_likes, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

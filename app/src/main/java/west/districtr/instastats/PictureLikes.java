@@ -3,8 +3,6 @@ package west.districtr.instastats;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -24,9 +22,11 @@ import java.util.concurrent.ExecutionException;
 
 public class PictureLikes extends Activity {
     public static final String PREFS_NAME = "MyPrefsFile";
+
     ArrayList<String> photoIDs;
     HashMap<String, Integer> likeCountHM;
     String url;
+
     TextView userLike1;
     TextView userLike2;
     TextView userLike3;
@@ -42,6 +42,19 @@ public class PictureLikes extends Activity {
     TextView userLike13;
     TextView userLike14;
     TextView userLike15;
+    TextView userLike16;
+    TextView userLike17;
+    TextView userLike18;
+    TextView userLike19;
+    TextView userLike20;
+    TextView userLike21;
+    TextView userLike22;
+    TextView userLike23;
+    TextView userLike24;
+    TextView userLike25;
+
+    TextView[] tableArr;
+
     ProgressBar progBar;
     String requestToken;
     String userID;
@@ -54,21 +67,39 @@ public class PictureLikes extends Activity {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
-         userLike1 = (TextView) findViewById(R.id.LikeTV1);
-         userLike2 = (TextView) findViewById(R.id.LikeTV2);
-         userLike3 = (TextView) findViewById(R.id.LikeTV3);
-         userLike4 = (TextView) findViewById(R.id.LikeTV4);
-         userLike5 = (TextView) findViewById(R.id.LikeTV5);
-         userLike6 = (TextView) findViewById(R.id.LikeTV6);
-         userLike7 = (TextView) findViewById(R.id.LikeTV7);
-         userLike8 = (TextView) findViewById(R.id.LikeTV8);
-         userLike9 = (TextView) findViewById(R.id.LikeTV9);
-         userLike10 = (TextView) findViewById(R.id.LikeTV10);
+        userLike1 = (TextView) findViewById(R.id.LikeTV1);
+        userLike2 = (TextView) findViewById(R.id.LikeTV2);
+        userLike3 = (TextView) findViewById(R.id.LikeTV3);
+        userLike4 = (TextView) findViewById(R.id.LikeTV4);
+        userLike5 = (TextView) findViewById(R.id.LikeTV5);
+        userLike6 = (TextView) findViewById(R.id.LikeTV6);
+        userLike7 = (TextView) findViewById(R.id.LikeTV7);
+        userLike8 = (TextView) findViewById(R.id.LikeTV8);
+        userLike9 = (TextView) findViewById(R.id.LikeTV9);
+        userLike10 = (TextView) findViewById(R.id.LikeTV10);
         userLike11 = (TextView) findViewById(R.id.LikeTV11);
         userLike12 = (TextView) findViewById(R.id.LikeTV12);
         userLike13 = (TextView) findViewById(R.id.LikeTV13);
         userLike14 = (TextView) findViewById(R.id.LikeTV14);
         userLike15 = (TextView) findViewById(R.id.LikeTV15);
+        userLike16 = (TextView) findViewById(R.id.LikeTV16);
+        userLike17 = (TextView) findViewById(R.id.LikeTV17);
+        userLike18 = (TextView) findViewById(R.id.LikeTV18);
+        userLike19 = (TextView) findViewById(R.id.LikeTV19);
+        userLike20 = (TextView) findViewById(R.id.LikeTV20);
+        userLike21 = (TextView) findViewById(R.id.LikeTV21);
+        userLike22 = (TextView) findViewById(R.id.LikeTV22);
+        userLike23 = (TextView) findViewById(R.id.LikeTV23);
+        userLike24 = (TextView) findViewById(R.id.LikeTV24);
+        userLike25 = (TextView) findViewById(R.id.LikeTV25);
+
+        tableArr = new TextView[]{userLike1,userLike2,userLike3,userLike4,userLike5,userLike6,
+                userLike7,userLike8,userLike9,userLike10,userLike11,userLike12,userLike13,
+                userLike14,userLike15,userLike16,userLike17,userLike18,userLike19,userLike20,
+                userLike21,userLike22,userLike23,userLike24,userLike25};
+
+        requestToken = prefs.getString("API_ACCESS_TOKEN", null);
+        userID = prefs.getString("API_USER_ID", null);
 
         photoIDs = new ArrayList<String>();
         likeCountHM = new HashMap<String, Integer>();
@@ -80,117 +111,71 @@ public class PictureLikes extends Activity {
         calcLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // since this is accessed from another class we have to redefine
-                SharedPreferences prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-
-                requestToken = prefs.getString("API_ACCESS_TOKEN", null);
-                userID = prefs.getString("API_USER_ID", null);
-
                 url = "https://api.instagram.com/v1/users/" + userID + "/media/recent/?access_token=" + requestToken;
-
+                // start progress spinner
                 progBar.setVisibility(View.VISIBLE);
-                new Thread(new bgTask()).start();
+                new Thread(new backgroundTask()).start();
             }
         });
-
     }
 
-    public synchronized void updateTable(final HashMap hashMap){
+    public synchronized void updateTable(final Object[] sortedHMArray, final int numOfValid, final int numOfEmpty){
+        /*
+        A method that updates the UI with the data received from
+        the background task
+         */
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                progBar.setVisibility(View.GONE);
-                // turning HashMap into an array of objects so that we can sort it
-                Object[] a = hashMap.entrySet().toArray();
-                // sorting
-                Arrays.sort(a, new Comparator() {
-                    public int compare(Object o1, Object o2) {
-                        return ((Map.Entry<String, Integer>) o2).getValue().compareTo(
-                                ((Map.Entry<String, Integer>) o1).getValue());
-                    }
-                });
-                // printing to logcat for debugging purposes
-                for (Object e : a) {
-                    System.out.println(((Map.Entry<String, Integer>) e).getKey() + " : "
+                for(int i = 0; i < numOfValid; ++i){
+                    Object e = sortedHMArray[i];
+                    tableArr[i].setText(((Map.Entry<String, Integer>) e).getKey() + " : "
                             + ((Map.Entry<String, Integer>) e).getValue());
                 }
-                // possible to make this in to for loop?
-                Object e = a[0];
-                userLike1.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[1];
-                userLike2.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[2];
-                userLike3.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[3];
-                userLike4.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[4];
-                userLike5.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[5];
-                userLike6.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[6];
-                userLike7.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[7];
-                userLike8.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[8];
-                userLike9.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[9];
-                userLike10.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[10];
-                userLike11.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[11];
-                userLike12.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[12];
-                userLike13.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[13];
-                userLike14.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
-                e = a[14];
-                userLike15.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                        + ((Map.Entry<String, Integer>) e).getValue());
+                for(int i = 0; i < numOfEmpty; ++i){
+                    tableArr[i].setVisibility(View.GONE);
+                }
+                progBar.setVisibility(View.GONE);
             }
         });
 
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_picture_likes, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    private void determineTable(HashMap hashMap){
+        /*
+        because the user might not have 25 unique likers over their photos,
+        we have to case check and just show the unique likers they do have.
+        So we determine if they have 25 here, and then we call updateTable
+        to actually update the correct amount of rows on the table, and make
+        empty ones disappear
+         */
+        Object[] hashMapArray = hashMap.entrySet().toArray();
+        // sorting
+        Arrays.sort(hashMapArray, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                return ((Map.Entry<String, Integer>) o2).getValue().compareTo(
+                        ((Map.Entry<String, Integer>) o1).getValue());
+            }
+        });
+        // printing to logcat for debugging purposes
+        for (Object e : hashMapArray) {
+            System.out.println(((Map.Entry<String, Integer>) e).getKey() + " : "
+                    + ((Map.Entry<String, Integer>) e).getValue());
         }
-
-        return super.onOptionsItemSelected(item);
+        int hashMapArrayLen = hashMapArray.length;
+        System.out.println("leng :" + hashMapArrayLen);
+        if(hashMapArrayLen >= 25){
+            hashMapArrayLen = 25;
+        }
+        updateTable(hashMapArray, hashMapArrayLen, 25 - hashMapArrayLen);
     }
 
-    private class bgTask implements Runnable{
+
+    private class backgroundTask implements Runnable{
         /*
         A class that does all of the computation on a thread
-        so that we dont stall up the main thread
+        so that we don't stall up the main thread. Used this instead
+        of Async task specifically because Async Task is asynchronous
+        and we want it to be synchronized
          */
         @Override
         public synchronized void run() {
@@ -245,11 +230,7 @@ public class PictureLikes extends Activity {
             }
             // Since we can only update the UI from main thread, we do that
             // with this function
-            updateTable(likeCountHM);
+            determineTable(likeCountHM);
         }
     }
 }
-
-
-
-
