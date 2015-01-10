@@ -11,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.ExecutionException;
+
 
 public class TotalLikes extends Activity {
     public static final String PREFS_NAME = "MyPrefsFile";
@@ -31,16 +33,15 @@ public class TotalLikes extends Activity {
         int picSum = 0;
 
         try {
-            JSONObject empty = new JSONObject("{}");
             String url = "https://api.instagram.com/v1/users/" + userID + "/media/recent/?access_token=" + requestToken;
-            JSONObject jObject = MainActivity.callAPI(url);
+            JSONObject jObject =  new APICall().execute(url).get();
             JSONArray photos;
             JSONObject pag = jObject.getJSONObject("pagination");
 
             do {
                 // while this repeats the above code, we have to do it because we
                 // will need to reassign these with the new url each iteration
-                jObject = MainActivity.callAPI(url);
+                jObject =  new APICall().execute(url).get();
                 photos = jObject.getJSONArray("data");
                 String nextURL = pag.getString("next_url");
                 url = nextURL;
@@ -62,9 +63,13 @@ public class TotalLikes extends Activity {
                 }
                 // make next url the next one
                 pag = jObject.getJSONObject("pagination");
-            }while(!(pag.equals(empty)));
+            }while(!(pag.toString().equals("{}")));
             System.out.print("pag is empty : " + pag.toString());
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e){
+            e.printStackTrace();
+        } catch (InterruptedException e){
             e.printStackTrace();
         }
     }

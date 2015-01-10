@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,9 +56,9 @@ public class MainActivity extends Activity {
         }
 
         // need to thread this correctly; below practice is running on UI thread; BAD
-        StrictMode.ThreadPolicy policy = new StrictMode.
-                ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+        //StrictMode.ThreadPolicy policy = new StrictMode.
+                //ThreadPolicy.Builder().permitAll().build();
+        //StrictMode.setThreadPolicy(policy);
 
         Button totalLikes = (Button) findViewById(R.id.TotalLikesButton);
         totalLikes.setOnClickListener(new View.OnClickListener() {
