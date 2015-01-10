@@ -14,18 +14,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
+import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends Activity {
@@ -41,8 +35,8 @@ public class MainActivity extends Activity {
         final EditText edittext = (EditText) findViewById(R.id.likeText);
         edittext.setKeyListener(null);
 
-        editor.putString("API_USER_ID", "1342339113");
-        editor.putString("API_ACCESS_TOKEN", "1342339113.fb02de9.ba0421955f7045a6ba440d8d49c285c3");
+        editor.putString("API_USER_ID", null);
+        editor.putString("API_ACCESS_TOKEN", "192392253.fb02de9.cf7d9aecd00f40af84aeb31002fea256");
         editor.commit();
 
 
@@ -64,6 +58,14 @@ public class MainActivity extends Activity {
         totalLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (prefs.getString("API_USER_ID", null) == null) {
+                    // if there is no user id in shared prefs, split access token
+                    // to find it
+                    String[] authParts = (prefs.getString("API_ACCESS_TOKEN", null)).split("\\.");
+                    System.out.println("This is what we are saving as api_user_id : " + authParts[0]);
+                    editor.putString("API_USER_ID",authParts[0]);
+                    editor.commit();
+                }
                 Intent i = new Intent(MainActivity.this, TotalLikes.class);
                 startActivity(i);
             }
@@ -103,25 +105,12 @@ public class MainActivity extends Activity {
                     // first we have to see if we know their user id, or else we can't make
                     // the API call!
                     if (prefs.getString("API_USER_ID", null) == null) {
-                        // if there is no user id in shared prefs, make API call to get it
-                        String url = "https://api.instagram.com/v1/users/self?access_token=" + prefs.getString("API_ACCESS_TOKEN", null);
-                        System.out.println("Calling api fun");
-                        JSONObject apiData = callAPI(url);
-                        System.out.println("Called api fun");
-                        // will return json obj with top being "meta" and "data"
-                        try {
-                            System.out.println(apiData.toString());
-                            JSONObject userInfo = apiData.getJSONObject("data");
-                            // inside data is (respectively) "username" "bio" "website" "profile_picture"
-                            // "full_name" "counts" (contains "media" "followed_by" "follows") "id"
-                            String userID = userInfo.getString("id");
-                            editor.putString("API_USER_ID", userID);
-                            editor.commit();
-                            System.out.println("committed user id");
-                            System.out.println("user id is " + prefs.getString("API_USER_ID", "not found"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        // if there is no user id in shared prefs, split access token
+                        // to find it
+                        String[] authParts = prefs.getString("API_ACCESS_TOKEN", null).split("\\.");
+                        System.out.println("This is what we are saving as api_user_id : " + authParts[0]);
+                        editor.putString("API_USER_ID",authParts[0]);
+                        editor.commit();
                     }
                     // now we have the user id for sure, so we continue onto counting their pictures!
 
@@ -132,6 +121,9 @@ public class MainActivity extends Activity {
                     //String accToken = "30846955.fb02de9.8d609643b18147d0a6de77c28747754f";
                     //String accToken2 = "1641965654.fb02de9.40582667abb34e8d820715ffdcabd366";
                     //chris 1342339113.fb02de9.ba0421955f7045a6ba440d8d49c285c3
+                    // chris id  = 1342339113
+                    // andy 192392253.fb02de9.cf7d9aecd00f40af84aeb31002fea256
+                    // andy id 192392253
 
                     String requestToken = prefs.getString("API_ACCESS_TOKEN", null);
                     String userID = prefs.getString("API_USER_ID", null);
@@ -146,7 +138,7 @@ public class MainActivity extends Activity {
                     try {
                         // api url to get a specific users recent posts
                         String url = "https://api.instagram.com/v1/users/" + userID + "/media/recent/?access_token=" + requestToken;
-                        JSONObject jObject = callAPI(url);
+                        JSONObject jObject = new APICall().execute(url).get();
                         // the json array photos is 20 pictures under data. we put them into an
                         // array and then iterate through it, getting their specific id's and adding
                         // them to an array list because we go back through the array list and
@@ -177,6 +169,10 @@ public class MainActivity extends Activity {
                         //System.out.println(hm.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } catch (InterruptedException e){
+                        e.printStackTrace();
+                    } catch (ExecutionException e){
+                        e.printStackTrace();
                     }
 
 
@@ -188,7 +184,7 @@ public class MainActivity extends Activity {
                             // api url call for getting info about a specific picture, in our case we want to
                             // see who all liked the picture
                             String url = "https://api.instagram.com/v1/media/" + s + "/likes?access_token=" + requestToken;
-                            JSONObject jObject = callAPI(url);
+                            JSONObject jObject = new APICall().execute(url).get();
                             JSONArray likes = jObject.getJSONArray("data");
                             for (int k = 0; k < likes.length(); k++) {
                                 JSONObject like = likes.getJSONObject(k);
@@ -200,6 +196,10 @@ public class MainActivity extends Activity {
                             }
                             System.out.println(likeCountHM.toString());
                         } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e){
+                            e.printStackTrace();
+                        } catch (ExecutionException e){
                             e.printStackTrace();
                         }
                     }
@@ -225,45 +225,7 @@ public class MainActivity extends Activity {
     }
 
 
-    public static JSONObject callAPI(String url) {
-        /*
-        A method created to prevent code repeat, seeing as just about every button
-        will need to make an API call
-         */
-        JSONObject jObject = null;
-        try {
-            URL apiURL = new URL(url);
-            HttpsURLConnection apiConnection = (HttpsURLConnection) apiURL.openConnection();
-            apiConnection.setRequestMethod("GET");
-            apiConnection.setRequestProperty("Content-length", "0");
-            apiConnection.setUseCaches(false);
-            apiConnection.setAllowUserInteraction(false);
-            apiConnection.setConnectTimeout(10000);
-            apiConnection.setReadTimeout(1000000);
-            apiConnection.connect();
 
-            int status = apiConnection.getResponseCode();
-            switch (status) {
-                case 200:
-                case 201:
-                    BufferedReader br = new BufferedReader(new InputStreamReader(apiConnection.getInputStream()));
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line + "\n");
-                    }
-                    br.close();
-                    jObject = new JSONObject(sb.toString());
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jObject;
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

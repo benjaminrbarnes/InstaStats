@@ -1,16 +1,24 @@
 package west.districtr.instastats;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
@@ -27,10 +35,36 @@ public class TotalLikes extends Activity {
         TextView numOfPhotoLikesTV = (TextView) findViewById(R.id.NumberOfLikesTV);
         TextView numOfPhotosTV = (TextView) findViewById(R.id.NumberOfPhotosTV);
 
-        String userID = prefs.getString("API_USER_ID", null);
-        String requestToken = prefs.getString("API_ACCESS_TOKEN", null);
         int sum = 0;
         int picSum = 0;
+
+        Button twitterShare = (Button) findViewById(R.id.TwitterShareButton);
+        twitterShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create intent using ACTION_VIEW and a normal Twitter url:
+                String tweetUrl =
+                        String.format("https://twitter.com/intent/tweet?text=%s&url=%s",
+                                urlEncode(" total likes from my most recent Instagram photos. Calculated with InstaStats"), urlEncode("https://www.google.fi/"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetUrl));
+
+// Narrow down to official Twitter app, if available:
+                List<ResolveInfo> matches = getPackageManager().queryIntentActivities(intent, 0);
+                for (ResolveInfo info : matches) {
+                    if (info.activityInfo.packageName.toLowerCase().startsWith("com.twitter")) {
+                        intent.setPackage(info.activityInfo.packageName);
+                    }
+                }
+
+                startActivity(intent);
+            }
+        });
+
+        String userID = prefs.getString("API_USER_ID", null);
+        String requestToken = prefs.getString("API_ACCESS_TOKEN", null);
+        System.out.println(userID + " : user id");
+        System.out.println(requestToken + " : request Token");
+
 
         try {
             String url = "https://api.instagram.com/v1/users/" + userID + "/media/recent/?access_token=" + requestToken;
@@ -74,6 +108,15 @@ public class TotalLikes extends Activity {
         }
     }
 
+    public static String urlEncode(String s) {
+        try {
+            return URLEncoder.encode(s, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new RuntimeException("URLEncoder.encode() failed for " + s);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
