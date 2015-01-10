@@ -26,6 +26,10 @@
             android:name=".TotalLikes"
             android:label="@string/title_activity_total_likes" >
         </activity>
+        <activity
+            android:name=".PictureLikes"
+            android:label="@string/title_activity_picture_likes" >
+        </activity>
     </application>
 
 </manifest>

@@ -10,21 +10,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
 
 public class MainActivity extends Activity {
     public static final String PREFS_NAME = "MyPrefsFile";
     public static String AUTHTOKEN = null;
+
+    // these should be gone before production
+    //String userID = "30846955";
+    //String userID2 = "1641965654";
+    //String accToken = "30846955.fb02de9.8d609643b18147d0a6de77c28747754f";
+    //String accToken2 = "1641965654.fb02de9.40582667abb34e8d820715ffdcabd366";
+    //chris 1342339113.fb02de9.ba0421955f7045a6ba440d8d49c285c3
+    // chris id  = 1342339113
+    // andy 192392253.fb02de9.cf7d9aecd00f40af84aeb31002fea256
+    // andy id 192392253
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +34,7 @@ public class MainActivity extends Activity {
         final EditText edittext = (EditText) findViewById(R.id.likeText);
         edittext.setKeyListener(null);
 
-        editor.putString("API_USER_ID", null);
+        editor.putString("API_USER_ID", "192392253");
         editor.putString("API_ACCESS_TOKEN", "192392253.fb02de9.cf7d9aecd00f40af84aeb31002fea256");
         editor.commit();
 
@@ -74,10 +73,13 @@ public class MainActivity extends Activity {
         Button getLikeButton = (Button) findViewById(R.id.button2);
         getLikeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, PictureLikes.class);
+                startActivity(i);
+
                 /*
                 This button gathers the statistics of who has liked your 20
                 most recent pictures
-                 */
+
 
 
                 // need to put this somewhere else, but for time being, we do it here
@@ -113,113 +115,11 @@ public class MainActivity extends Activity {
                         editor.commit();
                     }
                     // now we have the user id for sure, so we continue onto counting their pictures!
+                    /*
 
 
-                    // these should be gone before production
-                    //String userID = "30846955";
-                    //String userID2 = "1641965654";
-                    //String accToken = "30846955.fb02de9.8d609643b18147d0a6de77c28747754f";
-                    //String accToken2 = "1641965654.fb02de9.40582667abb34e8d820715ffdcabd366";
-                    //chris 1342339113.fb02de9.ba0421955f7045a6ba440d8d49c285c3
-                    // chris id  = 1342339113
-                    // andy 192392253.fb02de9.cf7d9aecd00f40af84aeb31002fea256
-                    // andy id 192392253
-
-                    String requestToken = prefs.getString("API_ACCESS_TOKEN", null);
-                    String userID = prefs.getString("API_USER_ID", null);
-
-                    // two variables below are used to accumulate likes of all pictures
-                    //int sum = 0;
-                    //int picSum = 0;
-
-                    ArrayList<String> photoIDs = new ArrayList<String>();
-                    HashMap<String, Integer> likeCountHM = new HashMap<String, Integer>();
-
-                    try {
-                        // api url to get a specific users recent posts
-                        String url = "https://api.instagram.com/v1/users/" + userID + "/media/recent/?access_token=" + requestToken;
-                        JSONObject jObject = new APICall().execute(url).get();
-                        // the json array photos is 20 pictures under data. we put them into an
-                        // array and then iterate through it, getting their specific id's and adding
-                        // them to an array list because we go back through the array list and
-                        // look at them specifically by their id's so that we can see the unique likes
-                        JSONArray photos = jObject.getJSONArray("data");
-                        for (int i = 0; i < photos.length(); ++i) {
-                            JSONObject photo = photos.getJSONObject(i);
-                            photoIDs.add(photo.getString("id"));
-                        }
-                        //JSONObject pag = jObject.getJSONObject("pagination");
-                        //String urlString = pag.getString("next_url");
-                        // below sums up picture likes
-                            /*
-                            for (int i = 0; i < photos.length(); ++i) {
-                                JSONObject photo = photos.getJSONObject(i);
-                                JSONObject likes = photo.getJSONObject("likes");
-                                JSONArray likeData = likes.getJSONArray("data");
-                                // to prevent taking forever, we will only accumulate
-                                // the likes if picture has less than 100 likes
-                                //System.out.println(hm.toString());
-                                System.out.println(likes.getString("count"));
-                                sum += Integer.parseInt(likes.getString("count"));
-                                picSum++;
-                                System.out.println("Sum of " + picSum + " pictures: " + sum);
-                            }
-                            */
-                        //firstURL = new URL(urlString);
-                        //System.out.println(hm.toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e){
-                        e.printStackTrace();
-                    } catch (ExecutionException e){
-                        e.printStackTrace();
-                    }
-
-
-                    for (String s : photoIDs) {
-                        // this goes through all the photo id's in the array list that we added earlier
-                        // we do this because to get specific info about a picture, we have to make a
-                        // unique api request for each picture
-                        try {
-                            // api url call for getting info about a specific picture, in our case we want to
-                            // see who all liked the picture
-                            String url = "https://api.instagram.com/v1/media/" + s + "/likes?access_token=" + requestToken;
-                            JSONObject jObject = new APICall().execute(url).get();
-                            JSONArray likes = jObject.getJSONArray("data");
-                            for (int k = 0; k < likes.length(); k++) {
-                                JSONObject like = likes.getJSONObject(k);
-                                if (likeCountHM.containsKey(like.getString("username"))) {
-                                    likeCountHM.put(like.getString("username"), likeCountHM.get(like.getString("username")) + 1);
-                                } else {
-                                    likeCountHM.put(like.getString("username"), 1);
-                                }
-                            }
-                            System.out.println(likeCountHM.toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e){
-                            e.printStackTrace();
-                        } catch (ExecutionException e){
-                            e.printStackTrace();
-                        }
-                    }
-                    System.out.println(likeCountHM.toString());
-                    Object[] a = likeCountHM.entrySet().toArray();
-                    Arrays.sort(a, new Comparator() {
-                        public int compare(Object o1, Object o2) {
-                            return ((Map.Entry<String, Integer>) o2).getValue().compareTo(
-                                    ((Map.Entry<String, Integer>) o1).getValue());
-                        }
-                    });
-                    for (Object e : a) {
-                        System.out.println(((Map.Entry<String, Integer>) e).getKey() + " : "
-                                + ((Map.Entry<String, Integer>) e).getValue());
-                    }
-                    Object e = a[0];
-
-                    edittext.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                            + ((Map.Entry<String, Integer>) e).getValue());
-                }
+                    */
+                //}
             }
         });
     }

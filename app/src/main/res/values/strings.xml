@@ -6,5 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_web_auth">WebAuth</string>
     <string name="title_activity_total_likes">TotalLikes</string>
+    <string name="title_activity_picture_likes">PictureLikes</string>
 
 </resources>
