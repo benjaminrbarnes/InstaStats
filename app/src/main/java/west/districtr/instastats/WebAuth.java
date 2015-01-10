@@ -35,10 +35,6 @@ public class WebAuth extends Activity {
         mySSLTolWebViewClient.shouldOverrideUrlLoading(myWebView, myWebView.getUrl());
 
     }
-    public void returnHome(){
-        Intent i = new Intent(WebAuth.this, MainActivity.class);
-        startActivity(i);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

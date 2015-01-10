@@ -39,29 +39,36 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         final SharedPreferences prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         final SharedPreferences.Editor editor = prefs.edit();
-
         final EditText edittext = (EditText) findViewById(R.id.likeText);
         edittext.setKeyListener(null);
 
+        editor.putString("API_USER_ID", "1342339113");
+        editor.putString("API_ACCESS_TOKEN", "1342339113.fb02de9.ba0421955f7045a6ba440d8d49c285c3");
+        editor.commit();
 
-        Button authButton = (Button) findViewById(R.id.button);
-        authButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                /*
-                Currently I have it set to that a button is on the main page, and to
-                authenticate, the user has to click on a button which takes
-                them to a new view with a web client
-                 */
-                Intent i = new Intent(MainActivity.this, WebAuth.class);
-                startActivity(i);
-            }
-        });
 
+        // idea to see if there is an auth token present in shared prefs,
+        // and if so, we know the user has already authenticated
+        // if not, we need to start the intent to go to the webview page to
+        // authenticate them
+        if(prefs.getString("API_ACCESS_TOKEN", null) == null){
+            Intent i = new Intent(MainActivity.this, WebAuth.class);
+            startActivity(i);
+        }
 
         // need to thread this correctly; below practice is running on UI thread; BAD
         StrictMode.ThreadPolicy policy = new StrictMode.
                 ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        Button totalLikes = (Button) findViewById(R.id.TotalLikesButton);
+        totalLikes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, TotalLikes.class);
+                startActivity(i);
+            }
+        });
 
         Button getLikeButton = (Button) findViewById(R.id.button2);
         getLikeButton.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +77,7 @@ public class MainActivity extends Activity {
                 This button gathers the statistics of who has liked your 20
                 most recent pictures
                  */
+
 
                 // need to put this somewhere else, but for time being, we do it here
                 // this basically requires the user to click on "get likes" before closing
@@ -85,6 +93,9 @@ public class MainActivity extends Activity {
                 if (prefs.getString("API_ACCESS_TOKEN", null) == null && AUTHTOKEN == null) {
                     // this happens if user has not authenticated and they dont have a saved
                     // auth token
+
+                    // make this into a toast message, and then start the intent for the
+                    // authentication page
                     System.out.println("You need to authenticate first!");
                 } else {
                     // falls into here if it is saved, we don't care about auth token being null or not
@@ -93,7 +104,6 @@ public class MainActivity extends Activity {
                     // first we have to see if we know their user id, or else we can't make
                     // the API call!
                     if (prefs.getString("API_USER_ID", null) == null) {
-
                         // if there is no user id in shared prefs, make API call to get it
                         String url = "https://api.instagram.com/v1/users/self?access_token=" + prefs.getString("API_ACCESS_TOKEN", null);
                         System.out.println("Calling api fun");
@@ -122,6 +132,7 @@ public class MainActivity extends Activity {
                     //String userID2 = "1641965654";
                     //String accToken = "30846955.fb02de9.8d609643b18147d0a6de77c28747754f";
                     //String accToken2 = "1641965654.fb02de9.40582667abb34e8d820715ffdcabd366";
+                    //chris 1342339113.fb02de9.ba0421955f7045a6ba440d8d49c285c3
 
                     String requestToken = prefs.getString("API_ACCESS_TOKEN", null);
                     String userID = prefs.getString("API_USER_ID", null);
@@ -215,7 +226,7 @@ public class MainActivity extends Activity {
     }
 
 
-    public JSONObject callAPI(String url) {
+    public static JSONObject callAPI(String url) {
         /*
         A method created to prevent code repeat, seeing as just about every button
         will need to make an API call
