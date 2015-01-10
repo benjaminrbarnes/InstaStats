@@ -2,11 +2,13 @@ package west.districtr.instastats;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -32,10 +34,14 @@ public class PictureLikes extends Activity {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
+        final ProgressBar progBar = (ProgressBar) findViewById(R.id.LikesProgressBar);
+        progBar.setVisibility(View.VISIBLE);
+
         Button calcLikes = (Button) findViewById(R.id.CalculatePictureLikesButton);
         calcLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 SharedPreferences prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 TextView userLike1 = (TextView) findViewById(R.id.LikeTV1);
@@ -121,6 +127,8 @@ public class PictureLikes extends Activity {
                     System.out.println(((Map.Entry<String, Integer>) e).getKey() + " : "
                             + ((Map.Entry<String, Integer>) e).getValue());
                 }
+
+
                 Object e = a[0];
                 userLike1.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
                         + ((Map.Entry<String, Integer>) e).getValue());
@@ -166,9 +174,14 @@ public class PictureLikes extends Activity {
                 e = a[14];
                 userLike15.setText(((Map.Entry<String, Integer>) e).getKey() + " : "
                         + ((Map.Entry<String, Integer>) e).getValue());
+
+                progBar.setVisibility(View.GONE);
             }
         });
+
     }
+
+
 
 
     @Override
@@ -191,5 +204,64 @@ public class PictureLikes extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+}
+
+class BackgroundTask extends AsyncTask<String, Void, HashMap>{
+    @Override
+    protected HashMap doInBackground(String... params) {
+        String url = params[0];
+        String requestToken = params[1];
+        ArrayList<String> photoIDs = new ArrayList<String>();
+        HashMap<String, Integer> likeCountHM = new HashMap<String, Integer>();
+        try {
+            // api url to get a specific users recent posts
+            JSONObject jObject = new APICall().execute(url).get();
+            // the json array photos is 20 pictures under data. we put them into an
+            // array and then iterate through it, getting their specific id's and adding
+            // them to an array list because we go back through the array list and
+            // look at them specifically by their id's so that we can see the unique likes
+            JSONArray photos = jObject.getJSONArray("data");
+            for (int i = 0; i < photos.length(); ++i) {
+                JSONObject photo = photos.getJSONObject(i);
+                photoIDs.add(photo.getString("id"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        } catch (ExecutionException e){
+            e.printStackTrace();
+        }
+
+
+        for (String s : photoIDs) {
+            // this goes through all the photo id's in the array list that we added earlier
+            // we do this because to get specific info about a picture, we have to make a
+            // unique api request for each picture
+            try {
+                // api url call for getting info about a specific picture, in our case we want to
+                // see who all liked the picture
+                String photoURL = "https://api.instagram.com/v1/media/" + s + "/likes?access_token=" + requestToken;
+                JSONObject jObject = new APICall().execute(photoURL).get();
+                JSONArray likes = jObject.getJSONArray("data");
+                for (int k = 0; k < likes.length(); k++) {
+                    JSONObject like = likes.getJSONObject(k);
+                    if (likeCountHM.containsKey(like.getString("username"))) {
+                        likeCountHM.put(like.getString("username"), likeCountHM.get(like.getString("username")) + 1);
+                    } else {
+                        likeCountHM.put(like.getString("username"), 1);
+                    }
+                }
+                System.out.println(likeCountHM.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            } catch (ExecutionException e){
+                e.printStackTrace();
+            }
+        }
+        return likeCountHM;
     }
 }

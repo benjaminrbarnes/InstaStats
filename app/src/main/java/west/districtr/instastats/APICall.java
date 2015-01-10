@@ -19,8 +19,9 @@ import javax.net.ssl.HttpsURLConnection;
 public class APICall extends AsyncTask<String, Integer, JSONObject> {
     /*
     A class that creates an Async task which allows us to make an API
-    call that is not on the UI thread.
-    Read documentation if need explanation:
+    call that is not run on the UI thread.
+
+    Read documentation if an explanation for AsyncTask is needed:
     http://developer.android.com/reference/android/os/AsyncTask.html
      */
     protected JSONObject doInBackground(String... urls) {
@@ -60,10 +61,10 @@ public class APICall extends AsyncTask<String, Integer, JSONObject> {
 
         return jObject;
     }
+
     protected void onProgressUpdate(Integer... progress) {
         //setProgressPercent(progress[0]);
     }
-
     protected void onPostExecute(Long result) {
         //showDialog("Downloaded " + result + " bytes");
     }

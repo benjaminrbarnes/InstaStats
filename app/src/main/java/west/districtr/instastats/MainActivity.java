@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 
 public class MainActivity extends Activity {
@@ -31,10 +30,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         final SharedPreferences prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         final SharedPreferences.Editor editor = prefs.edit();
-        final EditText edittext = (EditText) findViewById(R.id.likeText);
-        edittext.setKeyListener(null);
 
-        
+
         editor.putString("API_USER_ID", "192392253");
         editor.putString("API_ACCESS_TOKEN", "192392253.fb02de9.cf7d9aecd00f40af84aeb31002fea256");
         editor.commit();
@@ -128,9 +125,6 @@ public class MainActivity extends Activity {
             }
         });
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
