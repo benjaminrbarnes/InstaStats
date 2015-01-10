@@ -34,6 +34,7 @@ public class MainActivity extends Activity {
         final EditText edittext = (EditText) findViewById(R.id.likeText);
         edittext.setKeyListener(null);
 
+        
         editor.putString("API_USER_ID", "192392253");
         editor.putString("API_ACCESS_TOKEN", "192392253.fb02de9.cf7d9aecd00f40af84aeb31002fea256");
         editor.commit();
@@ -70,21 +71,25 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button getLikeButton = (Button) findViewById(R.id.button2);
+        Button getLikeButton = (Button) findViewById(R.id.PhotoLikesButton);
         getLikeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                if (prefs.getString("API_USER_ID", null) == null) {
+                    // if there is no user id in shared prefs, split access token
+                    // to find it
+                    String[] authParts = (prefs.getString("API_ACCESS_TOKEN", null)).split("\\.");
+                    System.out.println("This is what we are saving as api_user_id : " + authParts[0]);
+                    editor.putString("API_USER_ID",authParts[0]);
+                    editor.commit();
+                }
                 Intent i = new Intent(MainActivity.this, PictureLikes.class);
                 startActivity(i);
 
                 /*
-                This button gathers the statistics of who has liked your 20
-                most recent pictures
-
-
-
                 // need to put this somewhere else, but for time being, we do it here
                 // this basically requires the user to click on "get likes" before closing
                 // app or else auth will be lost and app will crash
+
                 if (prefs.getString("API_ACCESS_TOKEN", null) == null && AUTHTOKEN != null) {
                     // we have an auth, it just isnt saved, so when the user hits this button,
                     // it will save it into our saved preferences

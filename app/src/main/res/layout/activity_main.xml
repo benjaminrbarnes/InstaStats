@@ -9,24 +9,18 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get likes"
-        android:id="@+id/button2"
+        android:text="Get Photo Likes"
+        android:id="@+id/PhotoLikesButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"/>
-    <EditText
-        android:text="0"
-        android:id="@+id/likeText"
-        android:layout_below="@+id/button2"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Total Likes"
+        android:text="Get Total Likes"
         android:id="@+id/TotalLikesButton"
-        android:layout_below="@+id/likeText"
+        android:layout_below="@id/PhotoLikesButton"
         />
 
 
