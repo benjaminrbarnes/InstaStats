@@ -1,25 +1,45 @@
 package west.districtr.instastats;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 
 public class WebAuth extends Activity {
+    public static final String PREFS_NAME = "MyPrefsFile";
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_auth);
+        prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        editor = prefs.edit();
 
         WebView myWebView = (WebView) findViewById(R.id.webview);
         myWebView.getSettings().setSupportMultipleWindows(true);
         myWebView.getSettings().setJavaScriptEnabled(true);
-        SSLTolerantWebViewClient mySSLTolWebViewClient = new SSLTolerantWebViewClient();
-        myWebView.setWebViewClient(mySSLTolWebViewClient);
-
+        myWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.startsWith("http://benjaminbarnes.co/#")) {
+                    System.out.println(url);
+                    String parts[] = url.split("=");
+                    String request_token = parts[1];  //This is your request token.
+                    System.out.println(request_token);
+                    editor.putString("API_ACCESS_TOKEN", request_token);
+                    editor.commit();
+                    Intent i = new Intent(WebAuth.this, MainActivity.class);
+                    startActivity(i);
+                    return true;
+                }
+                return false;
+            }
+        });
         /*
         below is the website that I take users to to authorize their accounts
         regardless of what happens, it will take them to the redirect uri, currently my
@@ -31,28 +51,6 @@ public class WebAuth extends Activity {
         the web view to our specific web client so that SSL is tolerated, obviously
          */
         myWebView.loadUrl("https://api.instagram.com/oauth/authorize/?client_id=fb02de9d159b4670a1933112cae454fd&redirect_uri=http://benjaminbarnes.co&response_type=token&scope=basic+likes+comments+relationships");
-        mySSLTolWebViewClient.shouldOverrideUrlLoading(myWebView, myWebView.getUrl());
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_web_auth, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

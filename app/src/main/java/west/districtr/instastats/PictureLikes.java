@@ -119,27 +119,6 @@ public class PictureLikes extends Activity {
         });
     }
 
-    public synchronized void updateTable(final Object[] sortedHMArray, final int numOfValid, final int numOfEmpty){
-        /*
-        A method that updates the UI with the data received from
-        the background task
-         */
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                for(int i = 0; i < numOfValid; ++i){
-                    Object e = sortedHMArray[i];
-                    tableArr[i].setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                            + ((Map.Entry<String, Integer>) e).getValue());
-                }
-                for(int i = 0; i < numOfEmpty; ++i){
-                    tableArr[i].setVisibility(View.GONE);
-                }
-                progBar.setVisibility(View.GONE);
-            }
-        });
-
-    }
     private void determineTable(HashMap hashMap){
         /*
         because the user might not have 25 unique likers over their photos,
@@ -166,9 +145,32 @@ public class PictureLikes extends Activity {
         if(hashMapArrayLen >= 25){
             hashMapArrayLen = 25;
         }
+        System.out.println("len :" + hashMapArrayLen + " hashmapArray " + hashMapArray.toString());
         updateTable(hashMapArray, hashMapArrayLen, 25 - hashMapArrayLen);
     }
 
+    public synchronized void updateTable(final Object[] sortedHMArray, final int numOfValid, final int numOfEmpty){
+        /*
+        A method that updates the UI with the data received from
+        the background task
+         */
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for(int i = 0; i < numOfValid; i++){
+                    Object e = sortedHMArray[i];
+                    System.out.println(sortedHMArray[i].toString());
+                    tableArr[i].setText(((Map.Entry<String, Integer>) e).getKey() + " : "
+                            + ((Map.Entry<String, Integer>) e).getValue());
+                }
+                for(int i = numOfValid; i < numOfEmpty+1; ++i){
+                    System.out.println("empty :" + tableArr[i]);
+                    tableArr[i].setVisibility(View.GONE);
+                }
+                progBar.setVisibility(View.GONE);
+            }
+        });
+    }
 
     private class backgroundTask implements Runnable{
         /*

@@ -12,7 +12,6 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
     public static final String PREFS_NAME = "MyPrefsFile";
-    public static String AUTHTOKEN = null;
 
     // these should be gone before production
     //String userID = "30846955";
@@ -32,9 +31,9 @@ public class MainActivity extends Activity {
         final SharedPreferences.Editor editor = prefs.edit();
 
 
-        editor.putString("API_USER_ID", "192392253");
-        editor.putString("API_ACCESS_TOKEN", "192392253.fb02de9.cf7d9aecd00f40af84aeb31002fea256");
-        editor.commit();
+        //editor.putString("API_USER_ID", "1342339113");
+        //editor.putString("API_ACCESS_TOKEN", "1342339113.fb02de9.ba0421955f7045a6ba440d8d49c285c3");
+        //editor.commit();
 
 
         // idea to see if there is an auth token present in shared prefs,
@@ -45,11 +44,6 @@ public class MainActivity extends Activity {
             Intent i = new Intent(MainActivity.this, WebAuth.class);
             startActivity(i);
         }
-
-        // need to thread this correctly; below practice is running on UI thread; BAD
-        //StrictMode.ThreadPolicy policy = new StrictMode.
-                //ThreadPolicy.Builder().permitAll().build();
-        //StrictMode.setThreadPolicy(policy);
 
         Button totalLikes = (Button) findViewById(R.id.TotalLikesButton);
         totalLikes.setOnClickListener(new View.OnClickListener() {
