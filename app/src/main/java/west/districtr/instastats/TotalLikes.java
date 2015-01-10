@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -28,6 +29,8 @@ public class TotalLikes extends Activity {
     TextView numOfPhotoLikesTV;
     TextView numOfPhotosTV;
 
+    ProgressBar progBar;
+
     String url;
     String userID;
     String requestToken;
@@ -44,6 +47,9 @@ public class TotalLikes extends Activity {
         userID = prefs.getString("API_USER_ID", null);
         requestToken = prefs.getString("API_ACCESS_TOKEN", null);
 
+        progBar = (ProgressBar) findViewById(R.id.TotalProgressBar);
+        progBar.setVisibility(View.GONE);
+
         numOfPhotoLikesTV = (TextView) findViewById(R.id.NumberOfLikesTV);
         numOfPhotosTV = (TextView) findViewById(R.id.NumberOfPhotosTV);
 
@@ -52,6 +58,7 @@ public class TotalLikes extends Activity {
         calcLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progBar.setVisibility(View.VISIBLE);
                 new Thread(new backgroundTask()).start();
             }
         });
@@ -88,8 +95,10 @@ public class TotalLikes extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
                 numOfPhotosTV.setText(picSum + " photos");
                 numOfPhotoLikesTV.setText(sum + " likes");
+                progBar.setVisibility(View.GONE);
             }
         });
     }

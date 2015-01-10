@@ -1,26 +1,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".MainActivity">
 
 
     <Button
-        android:layout_gravity="center"
+        android:id="@+id/PhotoLikesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get Photo Likes"
-        android:id="@+id/PhotoLikesButton"
-        />
+        android:layout_gravity="center"
+        android:text="Get Photo Likes" />
 
     <Button
-        android:layout_gravity="center"
+        android:id="@+id/TotalLikesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get Total Likes"
-        android:id="@+id/TotalLikesButton"
-        />
+        android:layout_gravity="center"
+        android:text="Get Total Likes" />
+
+    <Button
+        android:id="@+id/ClearDataButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Clear user data" />
 
 
 </LinearLayout>

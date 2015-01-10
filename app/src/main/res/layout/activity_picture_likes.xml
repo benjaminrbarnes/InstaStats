@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
     <TextView
         android:layout_width="fill_parent"
@@ -14,8 +14,8 @@
     <RadioGroup
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/RadioButton20"
@@ -54,6 +54,26 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Calculate likes" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight=".5"
+            android:gravity="center"
+            android:text="Last time calculated: " />
+
+        <TextView
+            android:id="@+id/LastTimeCalculated"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight=".5"
+            android:gravity="center"
+            android:text=" time " />
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/LikesProgressBar"
@@ -189,6 +209,7 @@
                 android:gravity="center"
                 android:text="15"
                 android:textSize="25dp" />
+
             <TextView
                 android:id="@+id/LikeTV16"
                 android:layout_width="fill_parent"
@@ -196,6 +217,7 @@
                 android:gravity="center"
                 android:text="16"
                 android:textSize="25dp" />
+
             <TextView
                 android:id="@+id/LikeTV17"
                 android:layout_width="fill_parent"
@@ -203,6 +225,7 @@
                 android:gravity="center"
                 android:text="17"
                 android:textSize="25dp" />
+
             <TextView
                 android:id="@+id/LikeTV18"
                 android:layout_width="fill_parent"
@@ -210,6 +233,7 @@
                 android:gravity="center"
                 android:text="18"
                 android:textSize="25dp" />
+
             <TextView
                 android:id="@+id/LikeTV19"
                 android:layout_width="fill_parent"
@@ -217,6 +241,7 @@
                 android:gravity="center"
                 android:text="19"
                 android:textSize="25dp" />
+
             <TextView
                 android:id="@+id/LikeTV20"
                 android:layout_width="fill_parent"
@@ -224,6 +249,7 @@
                 android:gravity="center"
                 android:text="20"
                 android:textSize="25dp" />
+
             <TextView
                 android:id="@+id/LikeTV21"
                 android:layout_width="fill_parent"
@@ -231,6 +257,7 @@
                 android:gravity="center"
                 android:text="21"
                 android:textSize="25dp" />
+
             <TextView
                 android:id="@+id/LikeTV22"
                 android:layout_width="fill_parent"
@@ -238,6 +265,7 @@
                 android:gravity="center"
                 android:text="22"
                 android:textSize="25dp" />
+
             <TextView
                 android:id="@+id/LikeTV23"
                 android:layout_width="fill_parent"
@@ -245,6 +273,7 @@
                 android:gravity="center"
                 android:text="23"
                 android:textSize="25dp" />
+
             <TextView
                 android:id="@+id/LikeTV24"
                 android:layout_width="fill_parent"
@@ -252,6 +281,7 @@
                 android:gravity="center"
                 android:text="24"
                 android:textSize="25dp" />
+
             <TextView
                 android:id="@+id/LikeTV25"
                 android:layout_width="fill_parent"

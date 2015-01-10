@@ -113,8 +113,9 @@ public class PictureLikes extends Activity {
             public void onClick(View v) {
                 url = "https://api.instagram.com/v1/users/" + userID + "/media/recent/?access_token=" + requestToken;
                 // start progress spinner
-                progBar.setVisibility(View.VISIBLE);
-                new Thread(new backgroundTask()).start();
+                System.out.println();
+                //progBar.setVisibility(View.VISIBLE);
+                //new Thread(new backgroundTask()).start();
             }
         });
     }

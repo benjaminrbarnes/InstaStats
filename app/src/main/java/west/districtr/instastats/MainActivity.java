@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 
 public class MainActivity extends Activity {
@@ -30,7 +31,7 @@ public class MainActivity extends Activity {
         final SharedPreferences prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         final SharedPreferences.Editor editor = prefs.edit();
 
-
+        // if you want to skip authentication or force a user login
         //editor.putString("API_USER_ID", "1342339113");
         //editor.putString("API_ACCESS_TOKEN", "1342339113.fb02de9.ba0421955f7045a6ba440d8d49c285c3");
         //editor.commit();
@@ -40,25 +41,42 @@ public class MainActivity extends Activity {
         // and if so, we know the user has already authenticated
         // if not, we need to start the intent to go to the webview page to
         // authenticate them
-        if(prefs.getString("API_ACCESS_TOKEN", null) == null){
-            Intent i = new Intent(MainActivity.this, WebAuth.class);
-            startActivity(i);
-        }
+        //if(prefs.getString("API_ACCESS_TOKEN", null) == null){
+           // Intent i = new Intent(MainActivity.this, WebAuth.class);
+           // startActivity(i);
+        //}
+
+        Button clearData = (Button) findViewById(R.id.ClearDataButton);
+        clearData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editor.putString("API_ACCESS_TOKEN", null);
+                editor.putString("API_USER_ID", null);
+                editor.commit();
+            }
+        });
 
         Button totalLikes = (Button) findViewById(R.id.TotalLikesButton);
         totalLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (prefs.getString("API_ACCESS_TOKEN", "null").equals("null")){
+                    Toast toast = Toast.makeText(getApplicationContext(), "You need to authenticate first!", Toast.LENGTH_LONG);
+                    toast.show();
+                    Intent j = new Intent(MainActivity.this, WebAuth.class);
+                    startActivity(j);
+                }
                 if (prefs.getString("API_USER_ID", null) == null) {
                     // if there is no user id in shared prefs, split access token
                     // to find it
-                    String[] authParts = (prefs.getString("API_ACCESS_TOKEN", null)).split("\\.");
-                    System.out.println("This is what we are saving as api_user_id : " + authParts[0]);
-                    editor.putString("API_USER_ID",authParts[0]);
-                    editor.commit();
+                    //String[] authParts = (prefs.getString("API_ACCESS_TOKEN", null)).split("\\.");
+                    //System.out.println("This is what we are saving as api_user_id : " + authParts[0]);
+                    //editor.putString("API_USER_ID",authParts[0]);
+                    //editor.commit();
+                }else {
+                    Intent i = new Intent(MainActivity.this, TotalLikes.class);
+                    startActivity(i);
                 }
-                Intent i = new Intent(MainActivity.this, TotalLikes.class);
-                startActivity(i);
             }
         });
 
