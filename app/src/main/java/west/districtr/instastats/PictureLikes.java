@@ -134,6 +134,8 @@ public class PictureLikes extends Activity {
 
                 url = "https://api.instagram.com/v1/users/" + userID + "/media/recent/?access_token=" + requestToken;
 
+                // http://www.mkyong.com/android/android-radio-buttons-example/
+                // http://developer.android.com/guide/topics/ui/controls/radiobutton.html
                 int selectedId = RadioButtonGroup.getCheckedRadioButtonId();
                 SelectedRadioButton = (RadioButton) findViewById(selectedId);
                 // the getText call will either return 20,40,60,80,100, so we make sure it is a string
@@ -215,6 +217,7 @@ public class PictureLikes extends Activity {
                     //System.out.println("empty :" + tableArr[i]);
                     tableArr[i].setVisibility(View.GONE);
                 }
+                // http://alvinalexander.com/java/simpledateformat-convert-date-to-string-formatted-parse
                 java.util.Date today = Calendar.getInstance().getTime();
                 SimpleDateFormat formatter = new SimpleDateFormat("MMM dd");
                 String todayString = formatter.format(today);
