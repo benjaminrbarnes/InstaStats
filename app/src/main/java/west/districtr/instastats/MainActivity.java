@@ -4,18 +4,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 
 public class MainActivity extends Activity {
     public static final String PREFS_NAME = "MyPrefsFile";
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
+
+    Button clearData;
+    Button totalLikes;
+    Button getLikeButton;
 
     // these should be gone before production
     //String userID = "30846955";
@@ -31,14 +32,13 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final SharedPreferences prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        final SharedPreferences.Editor editor = prefs.edit();
+        prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        editor = prefs.edit();
 
         // if you want to skip authentication or force a user login
         editor.putString("API_USER_ID", "192392253");
         editor.putString("API_ACCESS_TOKEN", "192392253.fb02de9.cf7d9aecd00f40af84aeb31002fea256");
         editor.commit();
-
 
         // idea to see if there is an auth token present in shared prefs,
         // and if so, we know the user has already authenticated
@@ -49,18 +49,7 @@ public class MainActivity extends Activity {
             startActivity(i);
         }
 
-        java.util.Date today = Calendar.getInstance().getTime();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMd");
-        String todayString = formatter.format(today);
-        if(prefs.getString("DATE", "null").equals("null")){
-            editor.putString("DATE", todayString);
-            editor.commit();
-        }else if(prefs.getString("DATE", "null") != todayString){
-            editor.putString("DATE", todayString);
-            editor.commit();
-        }
-
-        Button clearData = (Button) findViewById(R.id.ClearDataButton);
+        clearData = (Button) findViewById(R.id.ClearDataButton);
         clearData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,7 +59,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button totalLikes = (Button) findViewById(R.id.TotalLikesButton);
+        totalLikes = (Button) findViewById(R.id.TotalLikesButton);
         totalLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,7 +83,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button getLikeButton = (Button) findViewById(R.id.PhotoLikesButton);
+        getLikeButton = (Button) findViewById(R.id.PhotoLikesButton);
         getLikeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (prefs.getString("API_USER_ID", null) == null) {
@@ -107,69 +96,8 @@ public class MainActivity extends Activity {
                 }
                 Intent i = new Intent(MainActivity.this, PictureLikes.class);
                 startActivity(i);
-
-                /*
-                // need to put this somewhere else, but for time being, we do it here
-                // this basically requires the user to click on "get likes" before closing
-                // app or else auth will be lost and app will crash
-
-                if (prefs.getString("API_ACCESS_TOKEN", null) == null && AUTHTOKEN != null) {
-                    // we have an auth, it just isnt saved, so when the user hits this button,
-                    // it will save it into our saved preferences
-                    editor.putString("API_ACCESS_TOKEN", AUTHTOKEN);
-                    editor.commit();
-                    System.out.println("Auth token just commited as " + prefs.getString("API_ACCESS_TOKEN", null));
-                }
-
-                if (prefs.getString("API_ACCESS_TOKEN", null) == null && AUTHTOKEN == null) {
-                    // this happens if user has not authenticated and they dont have a saved
-                    // auth token
-
-                    // make this into a toast message, and then start the intent for the
-                    // authentication page
-                    System.out.println("You need to authenticate first!");
-                } else {
-                    // falls into here if it is saved, we don't care about auth token being null or not
-                    // at this point
-                    System.out.println("Auth token is saved as " + prefs.getString("API_ACCESS_TOKEN", null));
-                    // first we have to see if we know their user id, or else we can't make
-                    // the API call!
-                    if (prefs.getString("API_USER_ID", null) == null) {
-                        // if there is no user id in shared prefs, split access token
-                        // to find it
-                        String[] authParts = prefs.getString("API_ACCESS_TOKEN", null).split("\\.");
-                        System.out.println("This is what we are saving as api_user_id : " + authParts[0]);
-                        editor.putString("API_USER_ID",authParts[0]);
-                        editor.commit();
-                    }
-                    // now we have the user id for sure, so we continue onto counting their pictures!
-                    /*
-
-
-                    */
-                //}
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
 

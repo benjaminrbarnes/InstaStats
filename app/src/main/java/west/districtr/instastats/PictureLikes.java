@@ -118,10 +118,12 @@ public class PictureLikes extends Activity {
         requestToken = prefs.getString("API_ACCESS_TOKEN", null);
         userID = prefs.getString("API_USER_ID", null);
 
-        lastTimeCalc.setText(prefs.getString("LAST_DATE_CALC", "Never"));
+        lastTimeCalc.setText(prefs.getString("LAST_DATE_CALC" + numOfPhotosToCheck, "Never"));
 
         progBar = (ProgressBar) findViewById(R.id.LikesProgressBar);
         progBar.setVisibility(View.GONE);
+
+
 
         Button calcLikes = (Button) findViewById(R.id.CalculatePictureLikesButton);
         calcLikes.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +141,7 @@ public class PictureLikes extends Activity {
                 // the reason we do this is because we accumulate likes by a for loop and each
                 // iteration of the for loop covers 20 pictures. I.E. 2 pages is 40 pictures
                 numOfPhotosToCheck = (Integer.parseInt((String) SelectedRadioButton.getText()))/20;
-                String sharedPrefKey = String.valueOf(numOfPhotosToCheck);
+                String sharedPrefKey = "LIKE_TIME_KEY"+String.valueOf(numOfPhotosToCheck);
                 long currTime = Calendar.getInstance().getTimeInMillis();
                 long savedValue = prefs.getLong(sharedPrefKey,1);
                 if(savedValue == 1){
@@ -162,7 +164,6 @@ public class PictureLikes extends Activity {
                     editor.commit();
                     new Thread(new backgroundTask()).start();
                 }
-
             }
         });
     }
@@ -208,17 +209,19 @@ public class PictureLikes extends Activity {
                     System.out.println(sortedHMArray[i].toString());
                     tableArr[i].setText(((Map.Entry<String, Integer>) e).getKey() + " : "
                             + ((Map.Entry<String, Integer>) e).getValue());
+                    tableArr[i].setVisibility(View.VISIBLE);
                 }
                 for (int i = numOfValid; i < numOfEmpty + 1; ++i) {
-                    System.out.println("empty :" + tableArr[i]);
+                    //System.out.println("empty :" + tableArr[i]);
                     tableArr[i].setVisibility(View.GONE);
                 }
                 java.util.Date today = Calendar.getInstance().getTime();
                 SimpleDateFormat formatter = new SimpleDateFormat("MMM dd");
                 String todayString = formatter.format(today);
-                editor.putString("LAST_DATE_CALC", todayString);
+                // we want it to remember last time it calculated each radio button
+                editor.putString("LAST_DATE_CALC" + numOfPhotosToCheck, todayString);
                 editor.commit();
-                lastTimeCalc.setText(prefs.getString("LAST_DATE_CALC", "Never"));
+                lastTimeCalc.setText(prefs.getString("LAST_DATE_CALC" + numOfPhotosToCheck, "Never"));
                 progBar.setVisibility(View.GONE);
 
             }
@@ -279,7 +282,7 @@ public class PictureLikes extends Activity {
                             likeCountHM.put(like.getString("username"), 1);
                         }
                     }
-                    System.out.println(likeCountHM.toString());
+                    //System.out.println(likeCountHM.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {

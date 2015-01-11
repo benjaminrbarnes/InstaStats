@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="4dp">
 
     <TextView
         android:layout_width="fill_parent"
@@ -58,22 +58,21 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:layout_weight=".5"
-            android:gravity="center"
+            android:gravity="right"
             android:text="Last time calculated: " />
 
         <TextView
             android:id="@+id/LastTimeCalculated"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:layout_weight=".5"
-            android:gravity="center"
-            android:text=" Never " />
+            android:gravity="left"
+            android:text="Never" />
     </LinearLayout>
 
     <ProgressBar
@@ -112,7 +111,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="3"
+                android:text="User : # of likes"
                 android:textSize="25dp" />
 
             <TextView

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,18 +19,24 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 
 public class TotalLikes extends Activity {
     public static final String PREFS_NAME = "MyPrefsFile";
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
 
     TextView numOfPhotoLikesTV;
     TextView numOfPhotosTV;
 
     ProgressBar progBar;
+    TextView lastTimeCalc;
 
     String url;
     String userID;
@@ -41,8 +48,8 @@ public class TotalLikes extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_total_likes);
-        final SharedPreferences prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        final SharedPreferences.Editor editor = prefs.edit();
+        prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        editor = prefs.edit();
 
         userID = prefs.getString("API_USER_ID", null);
         requestToken = prefs.getString("API_ACCESS_TOKEN", null);
@@ -53,16 +60,42 @@ public class TotalLikes extends Activity {
         numOfPhotoLikesTV = (TextView) findViewById(R.id.NumberOfLikesTV);
         numOfPhotosTV = (TextView) findViewById(R.id.NumberOfPhotosTV);
 
+        lastTimeCalc = (TextView) findViewById(R.id.TotalLastTimeCalc);
+
+        lastTimeCalc.setText(prefs.getString("TOTAL_LAST_TIME_CALC", "Never"));
+
+        numOfPhotoLikesTV.setText(prefs.getString("NUM_OF_PHOTO_LIKES", "0 likes"));
+        numOfPhotosTV.setText(prefs.getString("NUM_OF_PHOTOS", "0 photos"));
 
         Button calcLikes = (Button) findViewById(R.id.CalculateLikesButton);
         calcLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progBar.setVisibility(View.VISIBLE);
-                new Thread(new backgroundTask()).start();
+                String sharedPrefKey = "TOTAL_LIKE_TIME_KEY";
+                long currTime = Calendar.getInstance().getTimeInMillis();
+                long savedValue = prefs.getLong(sharedPrefKey,1);
+                if(savedValue == 1){
+                    // falls in here if they have never calculated likes today
+                    editor.putLong(sharedPrefKey, currTime);
+                    editor.commit();
+                    progBar.setVisibility(View.VISIBLE);
+                    new Thread(new backgroundTask()).start();
+                }else if(currTime - savedValue < 600000){
+                    // falls into here if they calculated likes less than 10 minutes ago
+                    long timeLeft = TimeUnit.MILLISECONDS.toMinutes(currTime - savedValue);
+                    String left = String.valueOf(10 - timeLeft);
+                    Toast toast = Toast.makeText(getApplicationContext(), "You can only calculate total likes once every 10 minutes. " + left +
+                            " minutes left", Toast.LENGTH_LONG);
+                    toast.show();
+                }else{
+                    // falls into here if they have calculated likes but not in the last 10 minutes
+                    progBar.setVisibility(View.VISIBLE);
+                    editor.putLong(sharedPrefKey, currTime);
+                    editor.commit();
+                    new Thread(new backgroundTask()).start();
+                }
             }
         });
-
 
         Button twitterShare = (Button) findViewById(R.id.TwitterShareButton);
         twitterShare.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +128,16 @@ public class TotalLikes extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
+                java.util.Date today = Calendar.getInstance().getTime();
+                SimpleDateFormat formatter = new SimpleDateFormat("MMM dd");
+                String todayString = formatter.format(today);
+                // we want it to remember last time it calculated each radio button
+                editor.putString("TOTAL_LAST_TIME_CALC", todayString);
+                editor.commit();
+                lastTimeCalc.setText(prefs.getString("TOTAL_LAST_TIME_CALC", "Never"));
+                editor.putString("NUM_OF_PHOTOS", picSum + " photos");
+                editor.putString("NUM_OF_PHOTO_LIKES", sum + " likes");
+                editor.commit();
                 numOfPhotosTV.setText(picSum + " photos");
                 numOfPhotoLikesTV.setText(sum + " likes");
                 progBar.setVisibility(View.GONE);
@@ -142,6 +184,7 @@ public class TotalLikes extends Activity {
             } catch (InterruptedException e){
                 e.printStackTrace();
             }
+
             updateTextView();
         }
     }
