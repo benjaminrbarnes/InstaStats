@@ -10,6 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 
 public class MainActivity extends Activity {
     public static final String PREFS_NAME = "MyPrefsFile";
@@ -32,19 +35,30 @@ public class MainActivity extends Activity {
         final SharedPreferences.Editor editor = prefs.edit();
 
         // if you want to skip authentication or force a user login
-        //editor.putString("API_USER_ID", "1342339113");
-        //editor.putString("API_ACCESS_TOKEN", "1342339113.fb02de9.ba0421955f7045a6ba440d8d49c285c3");
-        //editor.commit();
+        editor.putString("API_USER_ID", "192392253");
+        editor.putString("API_ACCESS_TOKEN", "192392253.fb02de9.cf7d9aecd00f40af84aeb31002fea256");
+        editor.commit();
 
 
         // idea to see if there is an auth token present in shared prefs,
         // and if so, we know the user has already authenticated
         // if not, we need to start the intent to go to the webview page to
         // authenticate them
-        //if(prefs.getString("API_ACCESS_TOKEN", null) == null){
-           // Intent i = new Intent(MainActivity.this, WebAuth.class);
-           // startActivity(i);
-        //}
+        if(prefs.getString("API_ACCESS_TOKEN", null) == null){
+            Intent i = new Intent(MainActivity.this, WebAuth.class);
+            startActivity(i);
+        }
+
+        java.util.Date today = Calendar.getInstance().getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMd");
+        String todayString = formatter.format(today);
+        if(prefs.getString("DATE", "null").equals("null")){
+            editor.putString("DATE", todayString);
+            editor.commit();
+        }else if(prefs.getString("DATE", "null") != todayString){
+            editor.putString("DATE", todayString);
+            editor.commit();
+        }
 
         Button clearData = (Button) findViewById(R.id.ClearDataButton);
         clearData.setOnClickListener(new View.OnClickListener() {
