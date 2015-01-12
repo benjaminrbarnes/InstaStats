@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
         // and if so, we know the user has already authenticated
         // if not, we need to start the intent to go to the webview page to
         // authenticate them
-        if(prefs.getString("API_ACCESS_TOKEN", null) == null){
+        if (prefs.getString("API_ACCESS_TOKEN", null) == null) {
             Intent i = new Intent(MainActivity.this, WebAuth.class);
             startActivity(i);
         }
@@ -53,8 +53,8 @@ public class MainActivity extends Activity {
         clearData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editor.putString("API_ACCESS_TOKEN", null);
-                editor.putString("API_USER_ID", null);
+                editor.putString("API_ACCESS_TOKEN", "null");
+                editor.putString("API_USER_ID", "null");
                 editor.commit();
             }
         });
@@ -63,20 +63,18 @@ public class MainActivity extends Activity {
         totalLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (prefs.getString("API_ACCESS_TOKEN", "null").equals("null")){
+                if (prefs.getString("API_ACCESS_TOKEN", "null").equals("null")) {
                     Toast toast = Toast.makeText(getApplicationContext(), "You need to authenticate first!", Toast.LENGTH_LONG);
                     toast.show();
-                    Intent j = new Intent(MainActivity.this, WebAuth.class);
-                    startActivity(j);
-                }
-                if (prefs.getString("API_USER_ID", null) == null) {
+                    Intent i = new Intent(MainActivity.this, WebAuth.class);
+                    startActivity(i);
+                } else if (prefs.getString("API_USER_ID", "null").equals("null")) {
                     // if there is no user id in shared prefs, split access token
                     // to find it
-                    //String[] authParts = (prefs.getString("API_ACCESS_TOKEN", null)).split("\\.");
-                    //System.out.println("This is what we are saving as api_user_id : " + authParts[0]);
-                    //editor.putString("API_USER_ID",authParts[0]);
-                    //editor.commit();
-                }else {
+                    String[] authParts = (prefs.getString("API_ACCESS_TOKEN", null)).split("\\.");
+                    editor.putString("API_USER_ID", authParts[0]);
+                    editor.commit();
+                } else {
                     Intent i = new Intent(MainActivity.this, TotalLikes.class);
                     startActivity(i);
                 }
@@ -86,16 +84,21 @@ public class MainActivity extends Activity {
         getLikeButton = (Button) findViewById(R.id.PhotoLikesButton);
         getLikeButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (prefs.getString("API_USER_ID", null) == null) {
+                if (prefs.getString("API_ACCESS_TOKEN", "null").equals("null")) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "You need to authenticate first!", Toast.LENGTH_LONG);
+                    toast.show();
+                    Intent i = new Intent(MainActivity.this, WebAuth.class);
+                    startActivity(i);
+                } else if (prefs.getString("API_USER_ID", "null").equals("null")) {
                     // if there is no user id in shared prefs, split access token
                     // to find it
                     String[] authParts = (prefs.getString("API_ACCESS_TOKEN", null)).split("\\.");
-                    System.out.println("This is what we are saving as api_user_id : " + authParts[0]);
-                    editor.putString("API_USER_ID",authParts[0]);
+                    editor.putString("API_USER_ID", authParts[0]);
                     editor.commit();
+                } else {
+                    Intent i = new Intent(MainActivity.this, PictureLikes.class);
+                    startActivity(i);
                 }
-                Intent i = new Intent(MainActivity.this, PictureLikes.class);
-                startActivity(i);
             }
         });
     }

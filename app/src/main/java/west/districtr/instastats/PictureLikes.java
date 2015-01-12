@@ -118,12 +118,14 @@ public class PictureLikes extends Activity {
         requestToken = prefs.getString("API_ACCESS_TOKEN", null);
         userID = prefs.getString("API_USER_ID", null);
 
-        lastTimeCalc.setText(prefs.getString("LAST_DATE_CALC" + numOfPhotosToCheck, "Never"));
-
         progBar = (ProgressBar) findViewById(R.id.LikesProgressBar);
         progBar.setVisibility(View.GONE);
 
+        SelectedRadioButton = (RadioButton) findViewById(R.id.RadioButton20);
+        SelectedRadioButton.setChecked(true);
 
+        lastTimeCalc.setText(prefs.getString("LAST_DATE_CALC1", "Never"));
+        updateTableFromString(prefs.getString("SAVED_TABLE_INSTANCE1","null"));
 
         Button calcLikes = (Button) findViewById(R.id.CalculatePictureLikesButton);
         calcLikes.setOnClickListener(new View.OnClickListener() {
@@ -206,13 +208,19 @@ public class PictureLikes extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < numOfValid; i++) {
                     Object e = sortedHMArray[i];
-                    System.out.println(sortedHMArray[i].toString());
-                    tableArr[i].setText(((Map.Entry<String, Integer>) e).getKey() + " : "
-                            + ((Map.Entry<String, Integer>) e).getValue());
+                    //System.out.println(sortedHMArray[i].toString());
+                    String entry = ((Map.Entry<String, Integer>) e).getKey() + " : "
+                            + ((Map.Entry<String, Integer>) e).getValue();
+                    tableArr[i].setText(entry);
                     tableArr[i].setVisibility(View.VISIBLE);
+                    sb.append(entry + "-");
                 }
+                editor.putString("SAVED_TABLE_INSTANCE"+numOfPhotosToCheck,sb.toString());
+                editor.commit();
+
                 for (int i = numOfValid; i < numOfEmpty + 1; ++i) {
                     //System.out.println("empty :" + tableArr[i]);
                     tableArr[i].setVisibility(View.GONE);
@@ -227,6 +235,37 @@ public class PictureLikes extends Activity {
                 lastTimeCalc.setText(prefs.getString("LAST_DATE_CALC" + numOfPhotosToCheck, "Never"));
                 progBar.setVisibility(View.GONE);
 
+            }
+        });
+    }
+
+    public synchronized void updateTableFromString(final String input){
+        /*
+        This method is used when the user selects a different radio button.
+        We want to see if the user has calculated it previously, and if so,
+        show them their data. The other updateTable is used when we are
+        showing the data after they click the button.
+         */
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(input != "null") {
+                    String[] values = input.split("-");
+                    int arrLen = values.length - 1;
+                    System.out.println(values.length + " : " + tableArr.length + " " + arrLen);
+                    for(int i = 0; i < arrLen; ++i){
+                        tableArr[i].setText(values[i]);
+                        tableArr[i].setVisibility(View.VISIBLE);
+                    }
+                    for(int i = arrLen; i < 24; ++i){
+                        tableArr[i].setVisibility(View.GONE);
+                    }
+                }else{
+                    System.out.println("String was null!");
+                    for(int i = 0; i < 25; ++i){
+                        tableArr[i].setVisibility(View.GONE);
+                    }
+                }
             }
         });
     }
@@ -297,6 +336,47 @@ public class PictureLikes extends Activity {
             // Since we can only update the UI from main thread, we do that
             // with this function
             determineTable(likeCountHM);
+        }
+    }
+
+    public void onRadioButtonClicked(View view) {
+        /*
+        A function that is used for the RadioGroup of RadioButtons
+        we have. Just updates the UI based off what button is selected
+         */
+        boolean checked = ((RadioButton) view).isChecked();
+
+        switch(view.getId()) {
+            case R.id.RadioButton20:
+                if (checked){
+                    lastTimeCalc.setText(prefs.getString("LAST_DATE_CALC1", "Never"));
+                    updateTableFromString(prefs.getString("SAVED_TABLE_INSTANCE1","null"));
+                    break;
+                }
+            case R.id.RadioButton40:
+                if (checked){
+                    lastTimeCalc.setText(prefs.getString("LAST_DATE_CALC2", "Never"));
+                    updateTableFromString(prefs.getString("SAVED_TABLE_INSTANCE2","null"));
+                    break;
+                }
+            case R.id.RadioButton60:
+                if (checked){
+                    lastTimeCalc.setText(prefs.getString("LAST_DATE_CALC3", "Never"));
+                    updateTableFromString(prefs.getString("SAVED_TABLE_INSTANCE3","null"));
+                    break;
+                }
+            case R.id.RadioButton80:
+                if (checked){
+                    lastTimeCalc.setText(prefs.getString("LAST_DATE_CALC4", "Never"));
+                    updateTableFromString(prefs.getString("SAVED_TABLE_INSTANCE4","null"));
+                    break;
+                }
+            case R.id.RadioButton100:
+                if (checked){
+                    lastTimeCalc.setText(prefs.getString("LAST_DATE_CALC5", "Never"));
+                    updateTableFromString(prefs.getString("SAVED_TABLE_INSTANCE5","null"));
+                    break;
+                }
         }
     }
 }

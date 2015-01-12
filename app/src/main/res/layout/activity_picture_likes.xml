@@ -22,30 +22,35 @@
             android:id="@+id/RadioButton20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
             android:text="20" />
 
         <RadioButton
             android:id="@+id/RadioButton40"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
             android:text="40" />
 
         <RadioButton
             android:id="@+id/RadioButton60"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
             android:text="60" />
 
         <RadioButton
             android:id="@+id/RadioButton80"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
             android:text="80" />
 
         <RadioButton
             android:id="@+id/RadioButton100"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
             android:text="100" />
     </RadioGroup>
 
