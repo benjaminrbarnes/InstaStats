@@ -7,5 +7,7 @@
     <string name="title_activity_web_auth">WebAuth</string>
     <string name="title_activity_total_likes">TotalLikes</string>
     <string name="title_activity_picture_likes">PictureLikes</string>
+    <string name="banner_ad_unit_id">ca-app-pub-1660316413319998/8835794669</string>
+
 
 </resources>

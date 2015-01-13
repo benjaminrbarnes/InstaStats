@@ -6,20 +6,59 @@
     android:padding="16dp"
     tools:context=".MainActivity">
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".3"
+        android:text="InstaStats"
+        android:textSize="40dp"
+        android:gravity="center"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".2"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/PhotoLikesButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight=".5"
+            android:text="Top Likers"
+            />
 
-    <Button
-        android:id="@+id/PhotoLikesButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Get Photo Likes" />
+        <Button
+            android:id="@+id/TotalLikesButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight=".5"
+            android:text="Total Likes" />
 
-    <Button
-        android:id="@+id/TotalLikesButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Get Total Likes" />
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".2"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/TotalCommentsButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight=".5"
+            android:text="Top Commenters"
+            />
+
+        <Button
+            android:id="@+id/TopCommentsButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight=".5"
+            android:text="Total Comments" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/ClearDataButton"
