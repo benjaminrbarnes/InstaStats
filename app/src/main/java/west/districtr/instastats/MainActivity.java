@@ -1,13 +1,10 @@
 package west.districtr.instastats;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -41,6 +38,15 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // AD
+        AdView adView = (AdView) this.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                //.addTestDevice("D9BD95E6048C651DFE0A0F5D9A46A73F")
+                .build();
+        adView.loadAd(adRequest);
+
         prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         editor = prefs.edit();
 
@@ -110,20 +116,6 @@ public class MainActivity extends Activity {
                 }
             }
         });
-    }
-    public static class AdFragment extends Fragment{
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_ad, container, false);
-        }
-        @Override
-        public void onActivityCreated(Bundle bundle) {
-            super.onActivityCreated(bundle);
-            AdView mAdView = (AdView) getView().findViewById(R.id.adView);
-            AdRequest adRequest = new AdRequest.Builder().build();
-            mAdView.loadAd(adRequest);
-        }
     }
 }
 
