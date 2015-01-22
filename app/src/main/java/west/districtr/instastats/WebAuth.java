@@ -31,6 +31,9 @@ public class WebAuth extends Activity {
         WebView myWebView = (WebView) findViewById(R.id.webview);
         myWebView.getSettings().setSupportMultipleWindows(true);
         myWebView.getSettings().setJavaScriptEnabled(true);
+        myWebView.clearHistory();
+        myWebView.clearCache(true);
+        myWebView.clearFormData();
         myWebView.setWebViewClient(new WebViewClient() {
 
             @Override

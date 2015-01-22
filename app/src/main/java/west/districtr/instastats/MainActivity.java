@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 
@@ -40,20 +39,23 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         // AD
-        AdView adView = (AdView) this.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
+        // http://www.androidbegin.com/tutorial/integrating-new-google-admob-banner-interstitial-ads/
+        //AdView adView = (AdView) this.findViewById(R.id.adView);
+        //AdRequest adRequest = new AdRequest.Builder()
+                // below two lines allow us to run a test ad on my phone to
+                // prevent us from infringing on googles ad policy
                 //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 //.addTestDevice("D9BD95E6048C651DFE0A0F5D9A46A73F")
-                .build();
-        adView.loadAd(adRequest);
+                //.build();
+        //adView.loadAd(adRequest);
 
         prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         editor = prefs.edit();
 
         // if you want to skip authentication or force a user login
-        editor.putString("API_USER_ID", "192392253");
-        editor.putString("API_ACCESS_TOKEN", "192392253.fb02de9.cf7d9aecd00f40af84aeb31002fea256");
-        editor.commit();
+        //editor.putString("API_USER_ID", "192392253");
+        //editor.putString("API_ACCESS_TOKEN", "192392253.fb02de9.cf7d9aecd00f40af84aeb31002fea256");
+        //editor.commit();
 
         // idea to see if there is an auth token present in shared prefs,
         // and if so, we know the user has already authenticated
@@ -68,8 +70,9 @@ public class MainActivity extends Activity {
         clearData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editor.putString("API_ACCESS_TOKEN", "null");
-                editor.putString("API_USER_ID", "null");
+                //editor.putString("API_ACCESS_TOKEN", "null");
+                //editor.putString("API_USER_ID", "null");
+                editor.clear();
                 editor.commit();
             }
         });
@@ -89,6 +92,8 @@ public class MainActivity extends Activity {
                     String[] authParts = (prefs.getString("API_ACCESS_TOKEN", null)).split("\\.");
                     editor.putString("API_USER_ID", authParts[0]);
                     editor.commit();
+                    Intent i = new Intent(MainActivity.this, TotalLikes.class);
+                    startActivity(i);
                 } else {
                     Intent i = new Intent(MainActivity.this, TotalLikes.class);
                     startActivity(i);
@@ -117,6 +122,33 @@ public class MainActivity extends Activity {
             }
         });
     }
+    /*
+    @Override
+    public void onResume() {
+        if (adView != null) {
+            adView.resume();
+        }
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        if (adView != null) {
+            adView.pause();
+        }
+        super.onPause();
+    }
+
+    //  Called before the activity is destroyed.
+    @Override
+    public void onDestroy() {
+        // Destroy the AdView.
+        if (adView != null) {
+            adView.destroy();
+        }
+        super.onDestroy();
+    }
+    */
 }
 
 
