@@ -23,6 +23,7 @@ public class MainActivity extends Activity {
     Button totalLikes;
     Button getLikeButton;
 
+    // used for testing
     // these should be gone before production
     //String userID = "30846955";
     //String userID2 = "1641965654";

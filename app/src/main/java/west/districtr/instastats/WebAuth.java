@@ -34,10 +34,12 @@ public class WebAuth extends Activity {
         myWebView.clearHistory();
         myWebView.clearCache(true);
         myWebView.clearFormData();
+        // here we are redefining the shouldOverrideUrlLoading for the webview client
         myWebView.setWebViewClient(new WebViewClient() {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                // if the url starts with my website then we know we need to redirect
                 if (url.startsWith("http://benjaminbarnes.co/#")) {
                     String parts[] = url.split("=");
                     String request_token = parts[1];  //This is the request token.

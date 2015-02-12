@@ -81,6 +81,7 @@ public class PictureLikes extends Activity {
         prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         editor = prefs.edit();
 
+        // declaring our views/objects
         lastTimeCalc = (TextView) findViewById(R.id.LastTimeCalculated);
         userLike1 = (TextView) findViewById(R.id.LikeTV1);
         userLike2 = (TextView) findViewById(R.id.LikeTV2);
@@ -171,7 +172,6 @@ public class PictureLikes extends Activity {
             }
         });
     }
-
     private void determineTable(HashMap hashMap) {
         /*
         because the user might not have 25 unique likers over their photos,
