@@ -23,17 +23,6 @@ public class MainActivity extends Activity {
     Button totalLikes;
     Button getLikeButton;
 
-    // used for testing
-    // these should be gone before production
-    //String userID = "30846955";
-    //String userID2 = "1641965654";
-    //String accToken = "30846955.fb02de9.8d609643b18147d0a6de77c28747754f";
-    //String accToken2 = "1641965654.fb02de9.40582667abb34e8d820715ffdcabd366";
-    //chris 1342339113.fb02de9.ba0421955f7045a6ba440d8d49c285c3
-    // chris id  = 1342339113
-    // andy 192392253.fb02de9.cf7d9aecd00f40af84aeb31002fea256
-    // andy id 192392253
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
