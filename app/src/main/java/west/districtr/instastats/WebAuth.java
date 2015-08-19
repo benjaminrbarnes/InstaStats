@@ -7,14 +7,14 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-
+/**
+ * A class that opens a webview for the user to authenticate their account with my application so
+ * that I can make API requests. After they authenticate, it will reroute them to my website with
+ * an auth token on the end, which we parse and save to the shared preferences, and then send them
+ * back to the home page.
+ */
 public class WebAuth extends Activity {
-    /*
-    A class that opens a webview for the user to authenticate their account
-    with my application so that I can make API requests. After they authenticate,
-    it will reroute them to my website with an auth token on the end, which we parse
-    and save to the shared preferences, and then send them back to the home page.
-     */
+
     public static final String PREFS_NAME = "MyPrefsFile";
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
@@ -26,7 +26,7 @@ public class WebAuth extends Activity {
         prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         editor = prefs.edit();
 
-        // need to fix on back pressed
+        // TODO: need to fix on back pressed
 
         WebView myWebView = (WebView) findViewById(R.id.webview);
         myWebView.getSettings().setSupportMultipleWindows(true);
@@ -50,7 +50,7 @@ public class WebAuth extends Activity {
                     finish();
                     return true;
                 }
-                // need to handle case where there was an error authenticating
+                // TODO: need to handle case where there was an error authenticating
                 return false;
             }
         });

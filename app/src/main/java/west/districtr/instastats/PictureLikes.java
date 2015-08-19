@@ -141,10 +141,10 @@ public class PictureLikes extends Activity {
                 // http://developer.android.com/guide/topics/ui/controls/radiobutton.html
                 int selectedId = RadioButtonGroup.getCheckedRadioButtonId();
                 SelectedRadioButton = (RadioButton) findViewById(selectedId);
-                // the getText call will either return 20,40,60,80,100, so we make sure it is a string
-                // then turn it into an integer, and divide it by 20 to get a number 1 thu 5
-                // the reason we do this is because we accumulate likes by a for loop and each
-                // iteration of the for loop covers 20 pictures. I.E. 2 pages is 40 pictures
+                /* the getText call will either return 20,40,60,80,100, so we make sure it is a string
+                 then turn it into an integer, and divide it by 20 to get a number 1 thu 5
+                 the reason we do this is because we accumulate likes by a for loop and each
+                 iteration of the for loop covers 20 pictures. I.E. 2 pages is 40 pictures */
                 numOfPhotosToCheck = (Integer.parseInt((String) SelectedRadioButton.getText()))/20;
                 String sharedPrefKey = "LIKE_TIME_KEY"+String.valueOf(numOfPhotosToCheck);
                 long currTime = Calendar.getInstance().getTimeInMillis();
@@ -172,14 +172,17 @@ public class PictureLikes extends Activity {
             }
         });
     }
+
+    /**
+     * because the user might not have 25 unique likers over their photos, we have to case
+     * check and just show the unique likers they do have. So we determine if they have 25 here,
+     * and then we call updateTable to actually update the correct amount of rows on the table,
+     * and make empty ones disappear
+     *
+     * @param hashMap
+     */
     private void determineTable(HashMap hashMap) {
-        /*
-        because the user might not have 25 unique likers over their photos,
-        we have to case check and just show the unique likers they do have.
-        So we determine if they have 25 here, and then we call updateTable
-        to actually update the correct amount of rows on the table, and make
-        empty ones disappear
-         */
+
         Object[] hashMapArray = hashMap.entrySet().toArray();
         // sorting
         Arrays.sort(hashMapArray, new Comparator() {
@@ -200,11 +203,15 @@ public class PictureLikes extends Activity {
         updateTable(hashMapArray, hashMapArrayLen, 25 - hashMapArrayLen);
     }
 
+    /**
+     * A method that updates the UI with the data received from the background task
+     *
+     * @param sortedHMArray
+     * @param numOfValid
+     * @param numOfEmpty
+     */
     public synchronized void updateTable(final Object[] sortedHMArray, final int numOfValid, final int numOfEmpty) {
-        /*
-        A method that updates the UI with the data received from
-        the background task
-         */
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -218,7 +225,7 @@ public class PictureLikes extends Activity {
                     tableArr[i].setVisibility(View.VISIBLE);
                     sb.append(entry + "-");
                 }
-                editor.putString("SAVED_TABLE_INSTANCE"+numOfPhotosToCheck,sb.toString());
+                editor.putString("SAVED_TABLE_INSTANCE" + numOfPhotosToCheck, sb.toString());
                 editor.commit();
 
                 for (int i = numOfValid; i < numOfEmpty + 1; ++i) {
@@ -239,12 +246,15 @@ public class PictureLikes extends Activity {
         });
     }
 
+    /**
+     * This method is used when the user selects a different radio button. We want to see if the
+     * user has calculated it previously, and if so, show them their data. The other updateTable
+     * is used when we are showing the data after they click the button.
+     *
+     * @param input
+     */
     public synchronized void updateTableFromString(final String input){
         /*
-        This method is used when the user selects a different radio button.
-        We want to see if the user has calculated it previously, and if so,
-        show them their data. The other updateTable is used when we are
-        showing the data after they click the button.
          */
         runOnUiThread(new Runnable() {
             @Override
@@ -270,21 +280,20 @@ public class PictureLikes extends Activity {
         });
     }
 
+    /**
+     * A class that does all of the computation on a thread so that we don't stall up the main
+     * thread. Used this instead of Async task specifically because Async Task is asynchronous
+     * and we want it to be synchronized
+     */
     private class backgroundTask implements Runnable {
-        /*
-        A class that does all of the computation on a thread
-        so that we don't stall up the main thread. Used this instead
-        of Async task specifically because Async Task is asynchronous
-        and we want it to be synchronized
-         */
         @Override
         public synchronized void run() {
             try {
                 for (int k = 0; k < numOfPhotosToCheck; ++k) {
-                    // the json array photos is 20 pictures under data. we put them into an
-                    // array and then iterate through it, getting their specific id's and adding
-                    // them to an array list because we go back through the array list and
-                    // look at them specifically by their id's so that we can see the unique likes
+                    /* the json array photos is 20 pictures under data. we put them into an
+                     array and then iterate through it, getting their specific id's and adding
+                     them to an array list because we go back through the array list and
+                     look at them specifically by their id's so that we can see the unique likes */
                     JSONObject jObject = new APICall().execute(url).get();
                     JSONArray photos = jObject.getJSONArray("data");
                     for (int i = 0; i < photos.length(); ++i) {
@@ -307,12 +316,12 @@ public class PictureLikes extends Activity {
 
 
             for (String s : photoIDs) {
-                // this goes through all the photo id's in the array list that we added earlier
-                // we do this because to get specific info about a picture, we have to make a
-                // unique api request for each picture
+                 /* this goes through all the photo id's in the array list that we added earlier
+                 we do this because to get specific info about a picture, we have to make a
+                 unique api request for each picture */
                 try {
-                    // api url call for getting info about a specific picture, in our case we want to
-                    // see who all liked the picture
+                    /* api url call for getting info about a specific picture, in our case we want to
+                     see who all liked the picture */
                     String url = "https://api.instagram.com/v1/media/" + s + "/likes?access_token=" + requestToken;
                     JSONObject jObject = new APICall().execute(url).get();
                     JSONArray likes = jObject.getJSONArray("data");
@@ -339,11 +348,13 @@ public class PictureLikes extends Activity {
         }
     }
 
+    /**
+     * A function that is used for the RadioGroup of RadioButtons
+     * we have. Just updates the UI based off what button is selected
+     *
+     * @param view
+     */
     public void onRadioButtonClicked(View view) {
-        /*
-        A function that is used for the RadioGroup of RadioButtons
-        we have. Just updates the UI based off what button is selected
-         */
         boolean checked = ((RadioButton) view).isChecked();
 
         switch(view.getId()) {

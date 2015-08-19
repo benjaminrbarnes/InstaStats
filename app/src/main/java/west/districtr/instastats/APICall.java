@@ -14,16 +14,14 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * Created by My_Mac on 1/9/15.
+ * A class that creates an Async task which allows us to make an API
+ * call that is not run on the UI thread.
+ *
+ * Read documentation if you need an explanation for AsyncTask:
+ * http://developer.android.com/reference/android/os/AsyncTask.html
  */
 public class APICall extends AsyncTask<String, Integer, JSONObject> {
-    /*
-    A class that creates an Async task which allows us to make an API
-    call that is not run on the UI thread.
 
-    Read documentation if you need an explanation for AsyncTask:
-    http://developer.android.com/reference/android/os/AsyncTask.html
-     */
     protected JSONObject doInBackground(String... urls) {
         JSONObject jObject = null;
         String url = urls[0];

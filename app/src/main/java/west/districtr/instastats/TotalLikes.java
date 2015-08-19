@@ -154,15 +154,15 @@ public class TotalLikes extends Activity {
                 JSONArray photos;
                 JSONObject pag = jObject.getJSONObject("pagination");
                 do {
-                    // while this repeats the above code, we have to do it because we
-                    // will need to reassign these with the new url each iteration
+                    /* while this repeats the above code, we have to do it because we
+                     will need to reassign these with the new url each iteration */
                     jObject =  new APICall().execute(url).get();
                     photos = jObject.getJSONArray("data");
                     if(!(pag.toString().equals("{}"))){
                         String nextURL = pag.getString("next_url");
                         url = nextURL;
                     }
-                    // program optimization
+                    // optimization
                     int numOfPhotos = photos.length();
                     // below sums up picture likes
                     for (int i = 0; i < numOfPhotos; ++i) {
